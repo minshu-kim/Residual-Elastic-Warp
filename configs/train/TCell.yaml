@@ -1,0 +1,53 @@
+train_dataset:
+  dataset:
+    name: paired-image-folders
+    args:
+      root_path_1: UDIS-D/training/input1/
+      root_path_2: UDIS-D/training/input2/
+      first_k: 10000
+
+  wrapper:
+    name: paired-images
+    args: {}
+
+  batch_size: 8
+
+
+valid_dataset:
+  dataset:
+    name: paired-image-folders
+    args:
+      root_path_1: UDIS-D/testing/input1/
+      root_path_2: UDIS-D/testing/input2/
+
+  wrapper:
+    name: paired-images
+    args: {}
+
+  batch_size: 16
+
+
+H_model:
+  name: H-Cell
+  args: {}
+
+
+T_model:
+  name: T-Cell
+  args: 
+    lev: 6
+    num_kp: 144
+    threshold: 8
+
+
+optimizer:
+  name: adamw
+  args:
+    lr: 1.e-4
+
+
+epoch_max: 100
+epoch_save: 10
+
+resume: save/_TCell/epoch-last.pth
+load_from: save/_HCell/best.pth
