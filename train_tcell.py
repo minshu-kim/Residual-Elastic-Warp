@@ -193,7 +193,7 @@ def valid(loader, HCell, TCell):
         pbar.set_description_str(desc="[Valid] PSNR: {:.4f}".format(tot_psnr/(b_id+1)), refresh=True)
         disps, flows = None, None
 
-    return tot_loss/(b_id+1)
+    return tot_psnr/(b_id+1)
 
 
 def main(config_, save_path, args):
@@ -208,8 +208,8 @@ def main(config_, save_path, args):
 
     n_gpus = len(os.environ['CUDA_VISIBLE_DEVICES'].split(','))
 
-    best_loss = 1e4
-    best_loss_e = 1
+    best_psnr = 1e-4
+    best_e = 1
 
     timer = utils.Timer()
 
@@ -224,7 +224,7 @@ def main(config_, save_path, args):
 
         tr_loss = train(train_loader, HCell, TCell, optimizer, epoch)
         with torch.no_grad():
-            val_loss = valid(valid_loader, HCell, TCell)
+            val_psnr = valid(valid_loader, HCell, TCell)
 
         lr_scheduler.step()
 
@@ -248,13 +248,13 @@ def main(config_, save_path, args):
         if (epoch_save is not None) and (epoch % epoch_save == 0):
             torch.save(sv_file, os.path.join(save_path, 'epoch-{}.pth'.format(epoch)))
 
-        if val_loss < best_loss:
-            best_loss = val_loss
+        if val_psnr > best_psnr:
+            best_psnr = val_psnr
             best_e = epoch
             torch.save(sv_file, os.path.join(save_path, 'best.pth'))
 
-        print('[{}/{} Summary] Avg Loss (Tr/Val): {:.4f}/{:.4f}'.format(epoch, epoch_max, tr_loss, val_loss))
-        record = '[Record] Best Valid Loss: {:.4f} | {} Epoch'.format(best_loss, best_loss_e)
+        print('[{}/{} Summary] Avg Tr Loss: {:.4f}, Val PSNR: {:.4f}'.format(epoch, epoch_max, tr_loss, val_psnr))
+        record = '[Record] Best Valid Loss: {:.4f} | {} Epoch'.format(best_psnr, best_e)
 
         t = timer.t()
         prog = (epoch - epoch_start + 1) / (epoch_max - epoch_start + 1)
