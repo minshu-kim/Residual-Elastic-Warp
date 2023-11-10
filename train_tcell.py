@@ -254,7 +254,7 @@ def main(config_, save_path, args):
             torch.save(sv_file, os.path.join(save_path, 'best.pth'))
 
         print('[{}/{} Summary] Avg Tr Loss: {:.4f}, Val PSNR: {:.4f}'.format(epoch, epoch_max, tr_loss, val_psnr))
-        record = '[Record] Best Valid Loss: {:.4f} | {} Epoch'.format(best_psnr, best_e)
+        record = '[Record] Best Valid PSNR: {:.4f} | {} Epoch'.format(best_psnr, best_e)
 
         t = timer.t()
         prog = (epoch - epoch_start + 1) / (epoch_max - epoch_start + 1)
