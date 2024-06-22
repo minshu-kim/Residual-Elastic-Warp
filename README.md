@@ -1,4 +1,4 @@
-# Recurrent Elastic Warps
+# Residual Elastic Warps
 This repository contains the official implementation of [REwarp](https://arxiv.org/abs/2309.01406), 24' WACV.
 
 ## Requirement
